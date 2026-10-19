@@ -4,7 +4,12 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+
+
+use App\Service\ArticleService;
+use App\Service\BonjourService;
 
 final class HelloWorldController extends AbstractController
 {
@@ -25,6 +30,45 @@ final class HelloWorldController extends AbstractController
         return $this->json([
             'formation' => 'LiveCampus',
             'module' => 'Symfony'
+        ]);
+    } 
+
+    #[Route('/coucou')]
+    public function b(Request $request): Response
+    {
+        // Récupérer un paramètre en GET
+        var_dump($request->query->get('prenom'));
+        exit();
+    } 
+    
+    #[Route('/coucou/{prenom}')]
+    public function c(string $prenom): Response
+    {
+        // Récupérer un paramètre dans l'URL
+        var_dump($prenom);
+        exit();
+    } 
+
+    #[Route('/formulaire', methods: ['POST'])]
+    public function d(Request $request): Response
+    {
+        // Récupérer un paramètre dans l'URL
+        var_dump($request->request->get('prenom'));
+        exit();
+    } 
+
+    #[Route('/formulaire', methods: ['GET'])]
+    public function e(): Response
+    {
+        return $this->render('hello_world/formulaire.html.twig');
+    } 
+
+    #[Route('/demo-services', methods: ['GET'])]
+    public function f(BonjourService $bs, ArticleService $as): Response
+    {
+        return $this->render('hello_world/demo-twig.html.twig', [
+            'bonjour' => $bs->direBonjour('toto'),
+            'articles' => $as->recupererArticles()
         ]);
     } 
 }
