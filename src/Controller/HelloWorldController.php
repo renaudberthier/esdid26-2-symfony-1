@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 
+use App\Repository\UserRepository;
 use App\Service\ArticleService;
 use App\Service\BonjourService;
 
@@ -70,5 +71,14 @@ final class HelloWorldController extends AbstractController
             'bonjour' => $bs->direBonjour('toto'),
             'articles' => $as->recupererArticles()
         ]);
+    } 
+
+    #[Route('/utilisateurs', methods: ['GET'])]
+    public function g(UserRepository $ur): Response
+    {
+        foreach($ur->findAll() as $user) {
+            var_dump($user->getPrenom() . ' ' . $user->getNom());
+        }
+        exit();
     } 
 }
