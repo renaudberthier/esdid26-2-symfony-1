@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FormationController!{% endblock %}
+
+{% block body %}
+<section>
+    <h1>Liste des formations</h1>
+
+    {% for formation in formations %}
+    <article>
+        <h2>{{ formation.titre }}</h2>
+        <p>{{ formation.description }}</p>
+        <em>Date de formation : {{ formation.date|date }}</em>
+        <em>Durée : {{ formation.duree }} heures</em>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}
