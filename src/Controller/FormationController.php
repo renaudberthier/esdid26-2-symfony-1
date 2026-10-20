@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use App\Form\CreerFormationType;
 use App\Entity\Formation;
 use App\Repository\FormationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +27,40 @@ final class FormationController extends AbstractController
     public function new(): Response
     {
         return $this->render('formation/nouvelle.html.twig');
+    }
+
+    #[Route(
+        '/formation/nouvelle-avec-formulaire', 
+        name: 'app_formation_nouvelle_avec_formulaire', 
+        methods:['GET', 'POST']
+    )]
+    public function new2(Request $request, EntityManagerInterface $em): Response
+    {
+        // Dans tous les cas, je crée un objet formation
+        $formation = new Formation();
+
+        // Je crée l'objet Formulaire sur la base de mon FormType
+        $form = $this->createForm(CreerFormationType::class, $formation);
+        // Si jamais on est en POST, j'en profite pour traiter le formulaire.
+        // - Au premier chargement (GET), rien ne se passe
+        // - A l'envoi du formulaire (POST), les données seront traitées
+        $form->handleRequest($request);
+
+        // Note: on n'appelle pas isValid si le formulaire n'a pas été soumis
+        if($form->isSubmitted() && $form->isValid()) {
+            // Ici :
+            // - Les données ont été envoyées
+            // - Les données sont valides
+            // Donc on réécrit la variable $formation avec les données du formulaire.
+            $formation = $form->getData();
+
+            $em->persist($formation);
+            $em->flush();
+            return $this->redirectToRoute('app_formation');
+        }
+        return $this->render('formation/nouvelle-avec-formulaire.html.twig', [
+            'form' => $form
+        ]);
     }
 
     #[Route('/formation/nouvelle', name: 'app_formation_creation', methods:['POST'])]

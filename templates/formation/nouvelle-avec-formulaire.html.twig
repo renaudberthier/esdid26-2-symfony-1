@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FormationController!{% endblock %}
+
+{% block body %}
+<section>
+    <h1>Créer une formation</h1>
+
+    {{ form_errors(form) }}
+    {{ form(form) }}
+</section>
+{% endblock %}
